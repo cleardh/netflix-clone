@@ -1,9 +1,11 @@
 import Head from 'next/head'
+import { signIn, signOut, useSession } from 'next-auth/client'
 
 export default function Home() {
+  const [ session, loading ] = useSession()
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black"
-      style={{ 'background-image': 'linear-gradient(rgb(0 0 0 / 60%), rgb(0 0 0 / 60%)), url(/hero-bg.jpg)' }}
+      style={{ backgroundImage: 'linear-gradient(rgb(0 0 0 / 60%), rgb(0 0 0 / 60%)), url(/hero-bg.jpg)' }}
     >
       <Head>
         <title>Netflix Clone</title>
@@ -11,6 +13,14 @@ export default function Home() {
       </Head>
 
       <main className="flex flex-col items-center justify-center flex-1 px-20 text-center">
+        {!session && <>
+          Not signed in <br/>
+          <button>Sign in</button>
+        </>}
+        {session && <>
+          Signed in as {session.user.email} <br/>
+          <button onClick={() => signOut()}>Sign out</button>
+        </>}
         <h1 className="text-5xl font-bold text-white max-w-lg">
           Unlimited movies, TV shows, and more.
         </h1>
@@ -18,7 +28,7 @@ export default function Home() {
         <p className='text-white text-lg'>Ready to watch? Enter your email to create or restart your membership.</p>
         <div className='flex mt-4'>
           <input placeholder='Email Address' className='bg-white p-4 min-w-[400px]' />
-          <button className='flex items-center bg-[#e50914] text-white text-xl px-8'>
+          <button onClick={() => signIn()} className='flex items-center bg-[#e50914] text-white text-xl px-8'>
             Get Started
             <svg className='w-6' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
